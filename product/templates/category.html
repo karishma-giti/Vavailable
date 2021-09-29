@@ -1,0 +1,82 @@
+{% include 'base2.html' %}
+{% load static %}
+{% block contain %}
+<div class="container">
+  <div class="row">
+    {% for product in product %}
+    <div class="col-lg-3 box">
+      <img class="thumbnail" src="{{product.image.url}}">
+      <div class="box-element product">
+        <p>{{product.name}}</p>
+        <h6><strong>{{product.discription}}</strong></h6>
+        <hr>
+        {% if user.is_authenticated %}
+        <button class='btn-primary' id='{{ product.id }}' onclick="cart(this);"> cart</button>
+        <button  class="btn btn-outline-light" id='{{ product.id }}' onclick="Wishlist(this);">
+          <i class="fa fa-heart whishstate" style="color: gray;"></i></button>
+             {% else%}
+             <a href="{% url 'category' %}" class='add_to_cart' id="{{product.id}}" data-cid='{{ product.id }}'> cart</a>
+        <a href="{% url 'category' %}" class='wishlist' id="{{product.id}}" data-pid='{{ product.id }}'>
+          <i class="fa fa-heart whishstate" style="color: gray;"></i></a>
+              {% endif %}
+        <h4><strong>{{product.price}}</strong></h4>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+        <script type="text/javascript">
+           function Wishlist(button) {
+            var pid;
+            pid = $(button).attr("id");
+            alert(pid)
+            $.ajax({
+              type: 'GET',
+              url: "{% url 'user_wishlist' %}",
+              data: {
+                product_id: pid
+              },
+              success: function(data) {
+                if (data.wishlist) {
+                  $('a[data-pid="' + pid + '"] > i.whishstate').css({
+                    "color": "red"
+                  })
+                } else {
+                  $('a[data-pid="' + pid + '"] > i.whishstate').css({
+                    "color": "grey"
+                  })
+                }
+              },
+            });
+         }
+         
+
+          // cart---------------------------------------------------------------------------
+
+
+function cart(button) {
+            var id;
+            id = $(button).attr("id");
+            alert(id)
+            $.ajax({
+              type: 'GET',
+              url: "{% url 'cart-create' %}",
+              data: {
+                product_id: id
+              },
+              success: function(data) {
+                if (data.cart) {
+                  $('a[data-id="' + id + '"] > i.whishstate').css({
+                    "color": "red"
+                  })
+                } else {
+                  $('a[data-id="' + id + '"] > i.whishstate').css({
+                    "color": "grey"
+                  })
+                }
+              },
+            });
+         }
+        </script>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock contain %}

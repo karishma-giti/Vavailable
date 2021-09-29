@@ -1,0 +1,39 @@
+.card{
+    width:50%;
+    margin-top: 60px;
+    margin-left: 300px;
+    background-color:white;
+    box-shadow: 15px 8px 8px rgb(61, 58, 58);
+    border-radius: 25px;
+
+}
+h1{
+    text-align: center;
+    font-weight: bold;
+}
+.card2{
+    width:50%;
+    margin-top: 60px;
+    margin-left: 300px;
+    background-color:white  ;
+    box-shadow: 15px 8px 8px rgb(61, 58, 58);
+    border-radius: 25px;
+}
+.navi{
+    background-color: #e05f6a;
+}
+
+h4{
+    display: inline-block; float: right;
+}
+
+.box{
+    margin-top: 40px;
+}
+.thumbnail{
+    height:120px;
+    width: 120px;
+}
+.disabled[disabled="disabled"] {
+    pointer-events: none;
+}
