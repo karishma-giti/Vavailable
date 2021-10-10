@@ -1,0 +1,38 @@
+{% include 'base2.html' %}
+{% load static %}
+{% block contain %}
+<div class="container">
+  <div class="row">
+    {% for product in product %}
+    <div class="col-lg-3 box">
+      <img class="thumbnail" src="{{product.image.url}}">
+      <div class="box-element product">
+        <p>{{product.name}}</p>
+        <h6><strong> {{product.discription}}</strong></h6>
+        <hr>
+        {% if user.is_authenticated %}
+        <button class='btn-primary cart' id='{{ product.id }}' onclick="cart(this);"> cart</button>
+
+        {% if product.id in wishlist %}
+        <button class="btn btn-outline-light" id='{{ product.id }}' onclick="Wishlist(this);">
+          <i class="fa fa-heart whishstate" style="color: red;"></i></button>
+        {% else%}
+
+        <button class="btn btn-outline-light" id='{{ product.id }}' onclick="Wishlist(this);">
+          <i class="fa fa-heart whishstate" style="color:gray;"></i></button>
+        {% endif %}
+
+        {% else%}
+        <a class='btn-primary cart' href="{% url 'home' %}" class='add_to_cart' id="{{product.id}}" data-cid='{{ product.id }}'>cart</a>
+        <button class="btn btn-outline-light" id='{{ product.id }}' onclick="Wishlist(this);"><a href="{% url 'home' %}"><i class="fa fa-heart whishstate" style="color:gray;"></i></a></button>
+
+        {% endif %}
+        <h4><strong> ₹ {{product.price}}</strong></h4>
+      </div>
+    </div>
+
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock contain %}

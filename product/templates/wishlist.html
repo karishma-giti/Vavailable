@@ -3,19 +3,18 @@
 {% block contain %}
 <div class="container">
 
-<div class="row">
-    <p>Welcome {{ user.username }} !!!</p>    
+  <div class="row">
+    <p>Welcome {{ user.username }} !!!</p>
     {% for wish in wishlist %}
-  <div class="col-lg-3 box">
-    <img class="thumbnail" src="{{wish.product.image.url}}">
-    <div class="box-element product">
-      <h6><strong>{{wish.product}}</strong></h6>
-      <h4><strong>{{wish.product.price}}</strong></h4>
-     
-
+    <div class="col-lg-3 box">
+      <img class="thumbnail" src="{{wish.product.image.url}}">
+      <div class="box-element product">
+        <h6><strong>{{wish.product}}</strong></h6>
+        <h4><strong>{{wish.product.price}}</strong></h4>
+      </div>
+      <button class='btn-primary'  id='{{ wish.product.id }}' onclick="move_to_cart(this);">move to cart</button>
     </div>
+    {% endfor %}
   </div>
-  {% endfor %}
-</div>
 </div>
 {% endblock contain %}

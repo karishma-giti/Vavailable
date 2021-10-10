@@ -3,27 +3,28 @@
 {% block contain %}
 <div class="container">
 
-<div class="row">
-    <p>Welcome {{ user.username }} !!!</p>    
+  <div class="row">
+    <p>Welcome {{ user.username }} !!!</p>
     {% for cart in carts %}
-  <div class="col-lg-3 box">
-    <img class="thumbnail" src="{{cart.product.image.url}}">
-    <div class="box-element product">
-      <h6><strong>{{cart.product}}</strong></h6>
-      <h4><strong>{{cart.product.price}}</strong></h4>
-      <a href="{% url 'remove_cart' cart.id%}">Remove cart</a>
-     
+    <div class="col-lg-3 box">
+      <img class="thumbnail" src="{{cart.product.image.url}}">
+      <div class="box-element product">
+        <h6><strong>{{cart.product}}</strong></h6>
+        <h4><strong>₹ {{cart.product.price}}</strong></h4>
+        <a class='btn-primary cart' href="{% url 'remove_cart' cart.id%}">Remove</a>
 
+      </div>
+      <button class='btn-primary'  id='{{ cart.product.id }}' onclick="move_to_wishlist(this);">move to wishlist</button>
     </div>
+    {% endfor %}
+    
 
-
-
-
-
-
-
-  </div>
-  {% endfor %}
+  </div></br></br>
+<div class="row">
+<b><p style=" margin-left:900px;">Total : ₹ {{total}}</p></b>
 </div>
 </div>
+
+
+
 {% endblock contain %}
