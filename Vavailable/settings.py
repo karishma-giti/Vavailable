@@ -104,13 +104,18 @@ SITE_ID = 1 # all-auth
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'vavailable',
+        'USER' :'root',
+        'PASSWORD' : '',
+        'HOST' : '127.0.0.1',
+        'PORT' : '3306',
         'TEST': {
-            'NAME': 'mytestdatabase',
+            'NAME': 'testdatabase',
         },
     }
 }
+
 
 # email confirmation
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
