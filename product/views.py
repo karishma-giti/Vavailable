@@ -1,9 +1,15 @@
 from django.shortcuts import render,redirect,HttpResponse
 from .models import TimeStamp,Category,Product,WishList,Cart
 from django.shortcuts import get_object_or_404
-from django.http import JsonResponse
+from django.http import JsonResponse, request
 from django.contrib import messages
 from django.core.mail import send_mail
+import razorpay
+import uuid
+from django.views.decorators.csrf import csrf_exempt
+import os
+from django.conf import settings
+from django.http import HttpResponseBadRequest
 
 
 
@@ -28,7 +34,7 @@ def home(request,id=None):
 
 def search(request):
     """
-    Serach products by name.
+    Serach products by name. 
     """
     query = request.GET.get('query')
     product=Product.objects.filter(name=query)
@@ -99,6 +105,7 @@ def cart_create(request):
             product_id = request.GET['product_id']
             product = get_object_or_404(Product, id=product_id)
             cart=Cart.objects.create(user=request.user,product=product)
+            print(cart)
             data={
             'cart':cart
             }
@@ -107,11 +114,11 @@ def cart_create(request):
             print("No Product is Found") 
     else:
         messages.info(request, 'login First.')
-    return redirect('/home/')    
+    return redirect('/home/')
 
 
-
-
+razorpay_client = razorpay.Client(auth=(settings.RAZOR_KEY_ID, settings.RAZOR_KEY_SECRET))
+ 
 def list_of_carts(request):
     """
     Shows all product in the CART and TOTAL price of all carts.
@@ -119,7 +126,12 @@ def list_of_carts(request):
     carts = Cart.objects.filter(user=request.user)
     cart_items =Cart.objects.filter(user=request.user).values_list('product__price',flat=True)
     total=sum(cart_items)
-    return render(request, 'cart.html', {'carts': carts,'total':total})
+    amount = total*100 #100 here means 1 dollar,1 rupree if currency INR
+    currency='INR'
+    response = razorpay_client.order.create(dict(amount=amount,currency=currency,payment_capture='1'))
+    # import pdb;pdb.set_trace()
+    print(response)
+    return render(request, 'cart.html', {'carts': carts,'total':total,'response':response})
 
 
 def move_to_wishlist(request):
@@ -141,3 +153,42 @@ def remove_cart(request, id):
     cart = Cart.objects.get(id=id)
     cart.delete()
     return redirect('list-of-cart')  
+
+
+# def order(request):
+    # order=Order(request.POST)
+    # if request.method == "POST":
+        # product=request.POST.get('product')
+        # quantity=request.POST.get('quantity')
+        # phone=request.POST.get('phone')
+        # price=request.POST.get('price')
+        # address=request.POST.get('address')
+        # insertion=()
+    # 
+    # order.save()  
+
+
+
+
+ 
+ 
+# def payment(request):
+    # amount = 1 #100 here means 1 dollar,1 rupree if currency INR
+    # currency='INR'
+    # client = razorpay.Client(auth=(os.getenv('rzp_test_bin3Lsm70z285Y'), os.getenv('bEmvrhwCwZyBRKisgA4XgOSq')))
+    # response = client.order.create(dict(amount=amount,currency=currency,payment_capture='0'))
+    # import pdb;pdb.set_trace;
+    # print(response)
+    # context = {'response':response}
+    # return render(request,"cart.html",context)
+
+
+@csrf_exempt
+def payment_success(request):
+    if request.method =="POST":
+        print(request.POST)
+        import pdb;pdb.set_trace()
+        return HttpResponse("Done payment hurrey!")
+
+
+

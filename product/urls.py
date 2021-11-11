@@ -29,6 +29,6 @@ urlpatterns = [
     url(r'^cart-create', views.cart_create, name='cart-create'),
     path('list-of-cart',views.list_of_carts,name='list-of-cart'),
     path('remove_cart/<int:id>',views.remove_cart,name='remove_cart'),
-    path('search/',views.search, name='search'),
-
-]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path('search/',views.search, name='search')
+    path('success/',views.payment_success,name="payment-success"),
+    ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

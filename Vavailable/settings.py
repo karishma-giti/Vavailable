@@ -199,6 +199,12 @@ AUTH_USER_MODEL='accounts.User'
 #App ID FACEBOOK --811862379501242
 #App Secret --f601930c74bdaa615462f8bde1db63a7
 
+
+
+
+RAZOR_KEY_ID = 'rzp_test_bin3Lsm70z285Y'
+RAZOR_KEY_SECRET = 'bEmvrhwCwZyBRKisgA4XgOSq'
+
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'SCOPE': [
