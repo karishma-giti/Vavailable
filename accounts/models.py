@@ -11,21 +11,13 @@ gender=(
     ('Male','Male'),
     ('Female','Female'),
 )
-
-
-class Address(models.Model):
-    city = models.CharField(max_length=100)  
-    area = models.CharField(max_length=300) 
-    state = models.CharField(max_length=100)
-    country = models.CharField(max_length=100)   
-    pin_code = models.PositiveIntegerField()
-    type_of_workplace = models.CharField(max_length=20, choices=workplace)   
-    default = models.CharField(max_length=100) 
- 
-
-  
-
 class User(AbstractUser):
-    phone = models.CharField(max_length=10)
-    gender = models.CharField(max_length=20, choices=gender)  
-    address = models.ForeignKey(Address,on_delete=models.CASCADE,null=True)  
+    phone = models.CharField(max_length=10,)
+    gender = models.CharField(max_length=20, choices=gender)
+    city = models.CharField(max_length=100,null=True)  
+    Area = models.CharField(max_length=300,null=True) 
+    state = models.CharField(max_length=100,null=True)
+    country = models.CharField(max_length=100,null=True)   
+    pin_code = models.PositiveIntegerField(blank=True, null=True)
+    type_of_workplace = models.CharField(max_length=20, choices=workplace,null=True)   
+   

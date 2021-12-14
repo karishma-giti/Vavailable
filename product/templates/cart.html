@@ -4,14 +4,14 @@
 <div class="container">
 
   <div class="row">
-    <p>Welcome {{ user.username }} !!!</p>
+    <p>Welcome {{ user.username }}</p></br>
     {% for cart in carts %}
     <div class="col-lg-3 box">
       <img class="thumbnail" src="{{cart.product.image.url}}">
       <div class="box-element product">
         <h6><strong>{{cart.product}}</strong></h6>
         <h4><strong>₹ {{cart.product.price}}</strong></h4>
-        <a class='btn-primary cart' href="{% url 'remove_cart' cart.id%}">Remove</a>
+        <a class='btn-primary cart' href="{% url 'remove_cart' cart.id %}">Remove</a>
 
       </div>
       <button class='btn-primary'  id='{{ cart.product.id }}' onclick="move_to_wishlist(this);">move to wishlist</button>
@@ -25,8 +25,9 @@
 </div>
 </div>
 
-
+ 
 <form action="/success/" method="POST">
+   {% csrf_token %}
     <script
         src="https://checkout.razorpay.com/v1/checkout.js"
         data-key="rzp_test_bin3Lsm70z285Y"
@@ -43,6 +44,5 @@
     ></script>
     <input type="hidden" custom="Hidden Element" name="hidden">
     </form>
-
 
 {% endblock contain %}

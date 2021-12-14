@@ -1,4 +1,6 @@
 from django.shortcuts import render,redirect,HttpResponse
+
+from accounts.models import User
 from .models import TimeStamp,Category,Product,WishList,Cart
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse, request
@@ -11,6 +13,8 @@ import os
 from django.conf import settings
 from django.http import HttpResponseBadRequest
 
+def profile(request):
+    return render(request,'profile.html')
 
 
 def home(request,id=None):
@@ -18,16 +22,17 @@ def home(request,id=None):
     GET all products by category vise ,
     also shows product alredy exists into wishlist.
     """
-    category=Category.objects.all()
-    if id:
-        product=Product.objects.filter(category=id)
-    else:
-        product=Product.objects.all()
-    wishlist={}    
-    if request.user.is_authenticated:
-        wishlist = WishList.objects.filter(user=request.user).values_list('product__id',flat=True) 
-    context={'category':category,'product':product,'wishlist':wishlist}
-    return render(request,"home.html",context)
+    if request.method == 'GET':
+        category=Category.objects.all()
+        if id:
+            product=Product.objects.filter(category=id)
+        else:
+            product=Product.objects.all()
+        wishlist={}
+        if request.user.is_authenticated:
+            wishlist = WishList.objects.filter(user=request.user).values_list('product__id',flat=True) 
+        context={'category':category,'product':product,'wishlist':wishlist}
+        return render(request,"home.html",context)
 
 
 
@@ -48,8 +53,9 @@ def wishlist(request):
     """
     Shows all wishlist products .
     """
-    wishlist = WishList.objects.filter(user=request.user)
-    return render(request, 'wishlist.html', {'wishlist': wishlist})    
+    if request.method == 'GET':
+        wishlist = WishList.objects.filter(user=request.user)
+        return render(request, 'wishlist.html', {'wishlist': wishlist})    
 
 
 
@@ -123,15 +129,19 @@ def list_of_carts(request):
     """
     Shows all product in the CART and TOTAL price of all carts.
     """
-    carts = Cart.objects.filter(user=request.user)
-    cart_items =Cart.objects.filter(user=request.user).values_list('product__price',flat=True)
-    total=sum(cart_items)
-    amount = total*100 #100 here means 1 dollar,1 rupree if currency INR
-    currency='INR'
-    response = razorpay_client.order.create(dict(amount=amount,currency=currency,payment_capture='1'))
-    # import pdb;pdb.set_trace()
-    print(response)
-    return render(request, 'cart.html', {'carts': carts,'total':total,'response':response})
+    if request.method == "GET":
+        carts = Cart.objects.filter(user=request.user)
+        if carts.count()==0:
+            message="Empty cart"
+            return render(request, 'cart.html',{'message':message})
+        else:
+            cart_items =Cart.objects.filter(user=request.user).values_list('product__price',flat=True)
+            total=sum(cart_items)
+            amount = int(total * 100)  #100 here means 1 dollar,1 rupree if currency INR
+            currency='INR'
+            response = razorpay_client.order.create(dict(amount=amount,currency=currency,payment_capture='1'))
+            print(response)
+            return render(request, 'cart.html', {'carts': carts,'total':total,'response':response})
 
 
 def move_to_wishlist(request):
@@ -150,9 +160,10 @@ def remove_cart(request, id):
     """
     remove product from cart.
     """
-    cart = Cart.objects.get(id=id)
-    cart.delete()
-    return redirect('list-of-cart')  
+    if request.method == "GET":
+        cart = Cart.objects.get(id=id)
+        cart.delete()
+        return redirect('list-of-cart')  
 
 
 # def order(request):
@@ -166,21 +177,6 @@ def remove_cart(request, id):
         # insertion=()
     # 
     # order.save()  
-
-
-
-
- 
- 
-# def payment(request):
-    # amount = 1 #100 here means 1 dollar,1 rupree if currency INR
-    # currency='INR'
-    # client = razorpay.Client(auth=(os.getenv('rzp_test_bin3Lsm70z285Y'), os.getenv('bEmvrhwCwZyBRKisgA4XgOSq')))
-    # response = client.order.create(dict(amount=amount,currency=currency,payment_capture='0'))
-    # import pdb;pdb.set_trace;
-    # print(response)
-    # context = {'response':response}
-    # return render(request,"cart.html",context)
 
 
 @csrf_exempt
